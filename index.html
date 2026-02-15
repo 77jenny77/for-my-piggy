@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no" />
 <title>훈종아 눌러봐</title>
 
 <style>
@@ -15,17 +16,19 @@ body{
   min-height:100vh;
   display:flex;
   justify-content:center;
-  align-items:center;
-  padding:24px;
+  align-items:flex-start;
+  padding-top:120px;
+  padding-left:24px;
+  padding-right:24px;
   overflow:hidden;
 
   background-image:
-    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
     url("01.jpg");
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  transition: background-image .5s ease;
+  transition: all .7s ease;
 
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
@@ -33,52 +36,75 @@ body{
 .card{
   width:100%;
   max-width:420px;
-  background:rgba(255,255,255,.95);
-  border-radius:20px;
-  padding:32px;
+  padding:36px 26px;
+  border-radius:28px;
+
+  background:rgba(255,255,255,.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
   text-align:center;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.35),
+    0 10px 30px rgba(255,77,109,.25);
+
   position:relative;
-  z-index:10; /* ✅ 클릭 안 막히게 */
+  z-index:10;
 }
 
 h1{
-  font-size:20px;
+  font-size:22px;
   line-height:1.6;
-  margin:0 0 24px;
+  margin:0 0 26px;
+  font-weight:700;
+  color:#ff4d6d;
+  letter-spacing:-0.3px;
 }
 
 .btn-container{
   position:relative;
   width:280px;
-  height:56px;
+  height:60px;
   margin:0 auto;
-  touch-action: manipulation; /* ✅ 모바일 탭 반응 개선 */
+  touch-action: manipulation;
 }
 
 .btn{
   position:absolute;
   top:0;
   width:120px;
-  height:48px;
+  height:52px;
   border:none;
   border-radius:30px;
-  font-size:16px;
+  font-size:17px;
   cursor:pointer;
   user-select:none;
-  z-index:20;            /* ✅ 클릭 안 막히게 */
-  pointer-events:auto;   /* ✅ 클릭 안 막히게 */
+  z-index:20;
+  pointer-events:auto;
   transition: transform .15s ease;
 }
 
-.btn:active{ transform:scale(.98); }
+.btn:active{ transform:scale(.92); }
 
-.yes{ left:0; background:#ff4d6d; color:#fff; }
-.no { left:160px; background:#d6d6d6; color:#111; }
+.yes{
+  left:0;
+  background:linear-gradient(135deg,#ff4d6d,#ff8fab);
+  color:#fff;
+  font-weight:700;
+  box-shadow:0 6px 20px rgba(255,77,109,.45);
+}
+
+.no{
+  left:160px;
+  background:#333;
+  color:#fff;
+  font-weight:600;
+}
 
 .result{
-  margin-top:18px;
-  font-size:20px;
+  margin-top:22px;
+  font-size:22px;
   font-weight:700;
   color:#ff4d6d;
   display:none;
@@ -89,6 +115,7 @@ h1{
   pointer-events:none;
   animation: float 2.8s linear forwards;
   z-index:5;
+  font-size:22px;
 }
 
 @keyframes float{
@@ -101,8 +128,9 @@ h1{
 <body>
   <div class="card">
     <h1>
-      스키장은 못갔지만<br>
-      금요일에 고기먹으러 갈까?
+      스키장은 못갔지만 😗<br>
+      금요일에 고기 먹으러 갈래?
+  
     </h1>
 
     <div class="btn-container" id="btnArea">
@@ -110,30 +138,36 @@ h1{
       <button class="btn no" id="noBtn" type="button">No</button>
     </div>
 
-    <div class="result" id="result">❤️ 2월 27일 데이트 확정 ❤️</div>
+    <div class="result" id="result">
+      잡았다 😆❤️<br>
+      금요일 고기 데이트 확정!
+    </div>
   </div>
 
 <script>
 (function () {
-  const yesBtn = document.getElementById("yesBtn") || document.querySelector(".yes");
-  const noBtn  = document.getElementById("noBtn")  || document.querySelector(".no");
-  const btnArea = document.getElementById("btnArea") || document.querySelector(".btn-container");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
+  const btnArea = document.getElementById("btnArea");
   const result = document.getElementById("result");
 
-  if (!yesBtn || !noBtn || !btnArea) {
-    // 요소가 없으면(복붙 실수) 그냥 종료
-    return;
-  }
-
   yesBtn.addEventListener("click", () => {
+
+    if (navigator.vibrate) {
+      navigator.vibrate([200,100,200]);
+    }
+
     document.body.style.backgroundImage =
-      'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
+    'linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("02.jpg")';
+
+    document.body.style.backgroundSize = "110%";
+
     if (result) result.style.display = "block";
     createHearts();
   });
 
   function createHearts(){
-    for(let i=0;i<20;i++){
+    for(let i=0;i<24;i++){
       const h=document.createElement("div");
       h.className="heart";
       h.textContent="❤️";
@@ -150,23 +184,20 @@ h1{
     const maxX = btnArea.clientWidth - w;
     const maxY = btnArea.clientHeight - h;
 
-    const x = Math.max(0, Math.random()*maxX);
-    const y = Math.max(0, Math.random()*maxY);
+    const x = Math.random()*maxX;
+    const y = Math.random()*maxY;
 
     noBtn.style.left = x + "px";
     noBtn.style.top  = y + "px";
   }
 
-  // PC: 올리면 도망
   noBtn.addEventListener("mouseenter", moveNo);
 
-  // 모바일: 누르려는 순간 도망
   noBtn.addEventListener("touchstart", (e) => {
     e.preventDefault();
     moveNo();
   }, { passive:false });
 
-  // 클릭도 방지
   noBtn.addEventListener("click", (e) => {
     e.preventDefault();
     moveNo();
