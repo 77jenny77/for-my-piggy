@@ -31,7 +31,7 @@ body{
   background-position:center;
   background-repeat:no-repeat;
 
-  transition:all .6s ease;
+  transition:background-image .6s ease;
   overflow:hidden;
 }
 
@@ -48,7 +48,11 @@ body{
   z-index:5;
 }
 
-/* 폭죽 파티클 */
+.overlay.show{
+  opacity:1;
+}
+
+/* 폭죽 */
 .particle{
   position:fixed;
   width:8px;
@@ -66,7 +70,7 @@ body{
   }
 }
 
-/* 타이핑 텍스트 */
+/* 중앙 메시지 */
 .big-message{
   position:fixed;
   inset:0;
@@ -81,6 +85,11 @@ body{
   opacity:0;
   z-index:20;
   text-shadow:0 4px 20px rgba(0,0,0,.4);
+  transition:opacity .4s ease;
+}
+
+.big-message.show{
+  opacity:1;
 }
 
 /* 카드 */
@@ -91,7 +100,7 @@ body{
   max-width:420px;
   padding:40px 28px;
   border-radius:32px;
-  background:rgba(255,255,255,.9);
+  background:rgba(255,255,255,.92);
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
   text-align:center;
@@ -111,7 +120,7 @@ h1{
 .btn-container{
   position:relative;
   width:280px;
-  height:70px;
+  height:80px;
   margin:0 auto;
 }
 
@@ -143,6 +152,14 @@ h1{
   color:#fff;
   font-weight:600;
 }
+
+.result{
+  margin-top:26px;
+  font-size:22px;
+  font-weight:700;
+  color:#ff4d6d;
+  display:none;
+}
 </style>
 </head>
 
@@ -151,106 +168,4 @@ h1{
 <div class="overlay" id="overlay"></div>
 <div class="big-message" id="bigMessage"></div>
 
-<div class="card">
-  <h1>
-    스키장은 못갔지만 😗<br>
-    금요일에 고기 먹으러 갈래?
-  </h1>
-
-  <div class="btn-container" id="btnArea">
-    <button class="btn yes" id="yesBtn">Yes</button>
-    <button class="btn no" id="noBtn">No</button>
-  </div>
-</div>
-
-<script>
-(function(){
-  const yesBtn=document.getElementById("yesBtn");
-  const noBtn=document.getElementById("noBtn");
-  const btnArea=document.getElementById("btnArea");
-  const overlay=document.getElementById("overlay");
-  const bigMessage=document.getElementById("bigMessage");
-
-  let noScale=1;
-
-  yesBtn.addEventListener("click",()=>{
-    document.body.style.backgroundImage=
-      'linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)), url("02.jpg")';
-
-    document.body.style.transform="scale(1.05)";
-    overlay.style.opacity="1";
-
-    typeMessage("❤️금요일 고기 데이트 확정 😆❤️");
-    createFireworks();
-  });
-
-  function typeMessage(text){
-    bigMessage.style.opacity="1";
-    bigMessage.textContent="";
-    let i=0;
-    function typing(){
-      if(i<text.length){
-        bigMessage.textContent+=text.charAt(i);
-        i++;
-        setTimeout(typing,80);
-      }
-    }
-    typing();
-  }
-
-  function createFireworks(){
-    for(let i=0;i<60;i++){
-      const p=document.createElement("div");
-      p.className="particle";
-      p.style.background=
-        "hsl("+Math.random()*360+",100%,60%)";
-
-      const angle=Math.random()*2*Math.PI;
-      const distance=120+Math.random()*80;
-
-      const x=Math.cos(angle)*distance+"px";
-      const y=Math.sin(angle)*distance+"px";
-
-      p.style.setProperty("--x",x);
-      p.style.setProperty("--y",y);
-
-      p.style.left=window.innerWidth/2+"px";
-      p.style.top=window.innerHeight/2+"px";
-
-      document.body.appendChild(p);
-      setTimeout(()=>p.remove(),1000);
-    }
-  }
-
-  function moveNo(){
-    const w=noBtn.offsetWidth;
-    const h=noBtn.offsetHeight;
-    const maxX=btnArea.clientWidth-w;
-    const maxY=btnArea.clientHeight-h;
-
-    const x=Math.random()*maxX;
-    const y=Math.random()*maxY;
-
-    noBtn.style.left=x+"px";
-    noBtn.style.top=y+"px";
-
-    noScale-=0.08;
-    if(noScale<0.3) noScale=0.3;
-    noBtn.style.transform="scale("+noScale+")";
-  }
-
-  noBtn.addEventListener("mouseenter",moveNo);
-  noBtn.addEventListener("touchstart",(e)=>{
-    e.preventDefault();
-    moveNo();
-  },{passive:false});
-  noBtn.addEventListener("click",(e)=>{
-    e.preventDefault();
-    moveNo();
-  });
-
-})();
-</script>
-
-</body>
-</html>
+<d
