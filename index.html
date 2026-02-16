@@ -143,14 +143,6 @@ h1{
   color:#fff;
   font-weight:600;
 }
-
-.result{
-  margin-top:26px;
-  font-size:22px;
-  font-weight:700;
-  color:#ff4d6d;
-  display:none;
-}
 </style>
 </head>
 
@@ -169,10 +161,6 @@ h1{
     <button class="btn yes" id="yesBtn">Yes</button>
     <button class="btn no" id="noBtn">No</button>
   </div>
-
-  <div class="result" id="result">
-    ❤️금요일 고기 데이트 확정 😆❤️
-  </div>
 </div>
 
 <script>
@@ -180,7 +168,6 @@ h1{
   const yesBtn=document.getElementById("yesBtn");
   const noBtn=document.getElementById("noBtn");
   const btnArea=document.getElementById("btnArea");
-  const result=document.getElementById("result");
   const overlay=document.getElementById("overlay");
   const bigMessage=document.getElementById("bigMessage");
 
@@ -192,9 +179,8 @@ h1{
 
     document.body.style.transform="scale(1.05)";
     overlay.style.opacity="1";
-    result.style.display="block";
 
-    typeMessage("훈종이 선택 완료 ❤️");
+    typeMessage("❤️금요일 고기 데이트 확정 😆❤️");
     createFireworks();
   });
 
