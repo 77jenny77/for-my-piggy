@@ -2,97 +2,109 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="format-detection" content="telephone=no" />
 <title>훈종아 눌러봐</title>
 
 <style>
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-button { -webkit-appearance: none; appearance: none; font: inherit; }
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
 
 body{
   margin:0;
-  min-height:100vh;
+  min-height:100svh;
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  padding-top:120px;
+  padding-top:18vh;
   padding-left:24px;
   padding-right:24px;
-  overflow:hidden;
+  padding-bottom:env(safe-area-inset-bottom);
+
+  font-family:-apple-system,BlinkMacSystemFont,
+  "Apple SD Gothic Neo","Noto Sans KR",sans-serif;
 
   background-image:
-    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
     url("01.jpg");
+
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  transition: all .7s ease;
 
-  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  transition:all .6s ease;
+  overflow:hidden;
 }
 
+/* 핑크 오버레이 */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center,
+    rgba(255,77,109,.55),
+    rgba(255,105,180,.45));
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .6s ease;
+  z-index:1;
+}
+
+/* 카드 */
 .card{
-  width:100%;
-  max-width:420px;
-  padding:36px 26px;
-  border-radius:28px;
-
-  background:rgba(255,255,255,.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
-  text-align:center;
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.35),
-    0 10px 30px rgba(255,77,109,.25);
-
   position:relative;
   z-index:10;
+  width:100%;
+  max-width:420px;
+  padding:40px 28px;
+  border-radius:32px;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  text-align:center;
+  box-shadow:
+    0 30px 70px rgba(0,0,0,.35),
+    0 10px 40px rgba(255,77,109,.25);
 }
 
 h1{
-  font-size:22px;
+  font-size:23px;
   line-height:1.6;
-  margin:0 0 26px;
+  margin:0 0 30px;
   font-weight:700;
   color:#ff4d6d;
-  letter-spacing:-0.3px;
 }
 
 .btn-container{
   position:relative;
   width:280px;
-  height:60px;
+  height:70px;
   margin:0 auto;
-  touch-action: manipulation;
+  touch-action:manipulation;
 }
 
 .btn{
   position:absolute;
   top:0;
   width:120px;
-  height:52px;
+  height:56px;
   border:none;
   border-radius:30px;
   font-size:17px;
   cursor:pointer;
   user-select:none;
-  z-index:20;
-  pointer-events:auto;
-  transition: transform .15s ease;
+  transition:transform .2s ease;
 }
 
-.btn:active{ transform:scale(.92); }
+.btn:active{
+  transform:scale(.9);
+}
 
 .yes{
   left:0;
   background:linear-gradient(135deg,#ff4d6d,#ff8fab);
   color:#fff;
   font-weight:700;
-  box-shadow:0 6px 20px rgba(255,77,109,.45);
+  box-shadow:0 8px 24px rgba(255,77,109,.45);
 }
 
 .no{
@@ -103,107 +115,125 @@ h1{
 }
 
 .result{
-  margin-top:22px;
+  margin-top:26px;
   font-size:22px;
   font-weight:700;
   color:#ff4d6d;
   display:none;
+  animation:pop .4s ease;
 }
 
+@keyframes pop{
+  from{transform:scale(.8); opacity:0;}
+  to{transform:scale(1); opacity:1;}
+}
+
+/* 하트 */
 .heart{
   position:fixed;
   pointer-events:none;
-  animation: float 2.8s linear forwards;
+  animation:float 3s linear forwards;
   z-index:5;
   font-size:22px;
 }
 
 @keyframes float{
-  0%{ transform:translateY(0); opacity:1; }
-  100%{ transform:translateY(-300px); opacity:0; }
+  0%{transform:translateY(0) scale(1); opacity:1;}
+  100%{transform:translateY(-350px) scale(1.6); opacity:0;}
 }
 </style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>
-      스키장은 못갔지만 😗<br>
-      금요일에 고기 먹으러 갈래?
-  
-    </h1>
 
-    <div class="btn-container" id="btnArea">
-      <button class="btn yes" id="yesBtn" type="button">Yes</button>
-      <button class="btn no" id="noBtn" type="button">No</button>
-    </div>
+<div class="overlay" id="overlay"></div>
 
-    <div class="result" id="result">
-      잡았다 😆❤️<br>
-      금요일 고기 데이트 확정!
-    </div>
+<div class="card">
+  <h1>
+    스키장은 못갔지만 😗<br>
+    금요일에 고기 먹으러 갈래?
+  </h1>
+
+  <div class="btn-container" id="btnArea">
+    <button class="btn yes" id="yesBtn">Yes</button>
+    <button class="btn no" id="noBtn">No</button>
   </div>
 
+  <div class="result" id="result">
+    잡았다 😆❤️<br>
+    금요일 고기 데이트 확정!
+  </div>
+</div>
+
 <script>
-(function () {
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn  = document.getElementById("noBtn");
-  const btnArea = document.getElementById("btnArea");
-  const result = document.getElementById("result");
+(function(){
+  const yesBtn=document.getElementById("yesBtn");
+  const noBtn=document.getElementById("noBtn");
+  const btnArea=document.getElementById("btnArea");
+  const result=document.getElementById("result");
+  const overlay=document.getElementById("overlay");
 
-  yesBtn.addEventListener("click", () => {
+  let noScale=1;
 
-    if (navigator.vibrate) {
+  yesBtn.addEventListener("click",()=>{
+    if(navigator.vibrate){
       navigator.vibrate([200,100,200]);
     }
 
-    document.body.style.backgroundImage =
-    'linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("02.jpg")';
+    document.body.style.backgroundImage=
+      'linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)), url("02.jpg")';
 
-    document.body.style.backgroundSize = "110%";
+    document.body.style.transform="scale(1.05)";
+    overlay.style.opacity="1";
 
-    if (result) result.style.display = "block";
+    result.style.display="block";
     createHearts();
   });
 
   function createHearts(){
-    for(let i=0;i<24;i++){
+    for(let i=0;i<30;i++){
       const h=document.createElement("div");
       h.className="heart";
       h.textContent="❤️";
-      h.style.left = (Math.random()*window.innerWidth) + "px";
-      h.style.top  = window.innerHeight + "px";
+      h.style.left=Math.random()*window.innerWidth+"px";
+      h.style.top=window.innerHeight+"px";
       document.body.appendChild(h);
-      setTimeout(()=>h.remove(), 2800);
+      setTimeout(()=>h.remove(),3000);
     }
   }
 
   function moveNo(){
-    const w = noBtn.offsetWidth || 120;
-    const h = noBtn.offsetHeight || 48;
-    const maxX = btnArea.clientWidth - w;
-    const maxY = btnArea.clientHeight - h;
+    const w=noBtn.offsetWidth;
+    const h=noBtn.offsetHeight;
+    const maxX=btnArea.clientWidth-w;
+    const maxY=btnArea.clientHeight-h;
 
-    const x = Math.random()*maxX;
-    const y = Math.random()*maxY;
+    const x=Math.random()*maxX;
+    const y=Math.random()*maxY;
 
-    noBtn.style.left = x + "px";
-    noBtn.style.top  = y + "px";
+    noBtn.style.left=x+"px";
+    noBtn.style.top=y+"px";
+
+    // 점점 작아짐
+    noScale-=0.08;
+    if(noScale<0.3) noScale=0.3;
+    noBtn.style.transform="scale("+noScale+")";
   }
 
-  noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.addEventListener("mouseenter",moveNo);
 
-  noBtn.addEventListener("touchstart", (e) => {
+  noBtn.addEventListener("touchstart",(e)=>{
     e.preventDefault();
     moveNo();
-  }, { passive:false });
+  },{passive:false});
 
-  noBtn.addEventListener("click", (e) => {
+  noBtn.addEventListener("click",(e)=>{
     e.preventDefault();
     moveNo();
   });
 
 })();
 </script>
+
 </body>
 </html>
