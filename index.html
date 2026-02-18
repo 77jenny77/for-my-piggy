@@ -5,11 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="format-detection" content="telephone=no" />
 <title>훈종아 눌러봐</title>
-
 <style>
 *{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%;}
-
 body{
   margin:0;
   min-height:100svh;
@@ -22,19 +20,15 @@ body{
   padding-bottom:env(safe-area-inset-bottom);
   font-family:-apple-system,BlinkMacSystemFont,
   "Apple SD Gothic Neo","Noto Sans KR",sans-serif;
-
   background-image:
     linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
     url("01.jpg");
-
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-
   transition:background-image .6s ease;
   overflow:hidden;
 }
-
 /* 핑크 오버레이 */
 .overlay{
   position:fixed;
@@ -47,11 +41,9 @@ body{
   transition:opacity .6s ease;
   z-index:5;
 }
-
 .overlay.show{
   opacity:1;
 }
-
 /* 폭죽 */
 .particle{
   position:fixed;
@@ -62,14 +54,12 @@ body{
   z-index:30;
   animation:explode 1s ease-out forwards;
 }
-
 @keyframes explode{
   to{
     transform:translate(var(--x), var(--y));
     opacity:0;
   }
 }
-
 /* 중앙 메시지 */
 .big-message{
   position:fixed;
@@ -87,11 +77,9 @@ body{
   text-shadow:0 4px 20px rgba(0,0,0,.4);
   transition:opacity .4s ease;
 }
-
 .big-message.show{
   opacity:1;
 }
-
 /* 카드 */
 .card{
   position:relative;
@@ -108,7 +96,6 @@ body{
     0 30px 70px rgba(0,0,0,.35),
     0 10px 40px rgba(255,77,109,.25);
 }
-
 h1{
   font-size:23px;
   line-height:1.6;
@@ -116,14 +103,12 @@ h1{
   font-weight:700;
   color:#ff4d6d;
 }
-
 .btn-container{
   position:relative;
   width:280px;
   height:80px;
   margin:0 auto;
 }
-
 .btn{
   position:absolute;
   top:0;
@@ -135,9 +120,7 @@ h1{
   cursor:pointer;
   transition:transform .2s ease;
 }
-
 .btn:active{transform:scale(.9);}
-
 .yes{
   left:0;
   background:linear-gradient(135deg,#ff4d6d,#ff8fab);
@@ -145,14 +128,12 @@ h1{
   font-weight:700;
   box-shadow:0 8px 24px rgba(255,77,109,.45);
 }
-
 .no{
   left:160px;
   background:#333;
   color:#fff;
   font-weight:600;
 }
-
 .result{
   margin-top:26px;
   font-size:22px;
@@ -162,10 +143,7 @@ h1{
 }
 </style>
 </head>
-
 <body>
-
 <div class="overlay" id="overlay"></div>
 <div class="big-message" id="bigMessage"></div>
-
 <d
