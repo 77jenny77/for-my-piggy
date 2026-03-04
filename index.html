@@ -6,7 +6,7 @@
 <meta name="format-detection" content="telephone=no" />
 <title>훈종아 눌러봐</title>
 <style>
-*{box-sizing:border-box;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html{-webkit-text-size-adjust:100%;}
 body{
   margin:0;
@@ -114,6 +114,9 @@ h1{
   transition:transform .2s ease;
   pointer-events:auto;
   z-index:100;
+  touch-action:manipulation;   /* ✅ 모바일 더블탭 줌 방지 */
+  user-select:none;            /* ✅ 텍스트 선택 방지 */
+  -webkit-user-select:none;
 }
 .btn:active{transform:scale(.9);}
 .yes{
@@ -160,7 +163,14 @@ h1{
   const bigMsg  = document.getElementById("bigMessage");
   const result  = document.getElementById("result");
 
-  yesBtn.addEventListener("click", () => {
+  /* ── Yes ── */
+  yesBtn.addEventListener("click", onYes);
+  yesBtn.addEventListener("touchend", function(e){
+    e.preventDefault();
+    onYes();
+  }, { passive:false });
+
+  function onYes(){
     document.body.style.backgroundImage =
       'linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)), url("02.jpg")';
     overlay.classList.add("show");
@@ -168,45 +178,62 @@ h1{
     bigMsg.textContent = "🎉 우리 데이트 확정 🎉";
     bigMsg.classList.add("show");
     launchFireworks();
-  });
+  }
 
+  /* ── No 도망 ── */
   function moveNo(){
     const w = noBtn.offsetWidth  || 120;
     const h = noBtn.offsetHeight || 56;
+    // 화면 안쪽 여백 10px 남겨서 도망
+    const maxX = window.innerWidth  - w - 10;
+    const maxY = window.innerHeight - h - 10;
     noBtn.style.position = "fixed";
     noBtn.style.zIndex   = "200";
-    noBtn.style.left = Math.max(0, Math.random() * (window.innerWidth  - w)) + "px";
-    noBtn.style.top  = Math.max(0, Math.random() * (window.innerHeight - h)) + "px";
+    noBtn.style.left = Math.max(10, Math.random() * maxX) + "px";
+    noBtn.style.top  = Math.max(10, Math.random() * maxY) + "px";
   }
 
+  // PC: 마우스 올리면 도망
   noBtn.addEventListener("mouseenter", moveNo);
-  noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, { passive:false });
-  noBtn.addEventListener("click",      (e) => { e.preventDefault(); moveNo(); });
 
-  function launchFireworks(){
-    const colors = ["#ff4d6d","#ff8fab","#ffb3c1","#ff006e","#fb5607","#ffbe0b","#8338ec","#3a86ff"];
-    for(let burst = 0; burst < 6; burst++){
-      setTimeout(() => {
-        const cx = Math.random() * window.innerWidth;
-        const cy = Math.random() * window.innerHeight * 0.6;
-        for(let i = 0; i < 20; i++){
-          const p = document.createElement("div");
-          p.className = "particle";
-          const angle = (i / 20) * 360;
-          const dist  = 60 + Math.random() * 80;
-          const rad   = angle * Math.PI / 180;
-          p.style.left = cx + "px";
-          p.style.top  = cy + "px";
-          p.style.background = colors[Math.floor(Math.random() * colors.length)];
-          p.style.setProperty("--x", (Math.cos(rad) * dist) + "px");
-          p.style.setProperty("--y", (Math.sin(rad) * dist) + "px");
-          document.body.appendChild(p);
-          setTimeout(() => p.remove(), 1100);
-        }
-      }, burst * 250);
-    }
-  }
+  // 모바일: 손가락 닿는 순간 도망 (touchstart)
+  noBtn.addEventListener("touchstart", function(e){
+    e.preventDefault(); // ✅ 클릭 이벤트 발생 차단
+    moveNo();
+  }, { passive:false });
+
+  // 혹시 click까지 왔을 때도 도망
+  noBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    moveNo();
+  });
+
 })();
+
+/* ── 폭죽 ── */
+function launchFireworks(){
+  const colors = ["#ff4d6d","#ff8fab","#ffb3c1","#ff006e","#fb5607","#ffbe0b","#8338ec","#3a86ff"];
+  for(let burst = 0; burst < 6; burst++){
+    setTimeout(() => {
+      const cx = Math.random() * window.innerWidth;
+      const cy = Math.random() * window.innerHeight * 0.6;
+      for(let i = 0; i < 20; i++){
+        const p = document.createElement("div");
+        p.className = "particle";
+        const angle = (i / 20) * 360;
+        const dist  = 60 + Math.random() * 80;
+        const rad   = angle * Math.PI / 180;
+        p.style.left = cx + "px";
+        p.style.top  = cy + "px";
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.setProperty("--x", (Math.cos(rad) * dist) + "px");
+        p.style.setProperty("--y", (Math.sin(rad) * dist) + "px");
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1100);
+      }
+    }, burst * 250);
+  }
+}
 </script>
 </body>
 </html>
