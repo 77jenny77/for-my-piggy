@@ -29,7 +29,6 @@ body{
   transition:background-image .6s ease;
   overflow:hidden;
 }
-/* 핑크 오버레이 */
 .overlay{
   position:fixed;
   inset:0;
@@ -41,10 +40,7 @@ body{
   transition:opacity .6s ease;
   z-index:5;
 }
-.overlay.show{
-  opacity:1;
-}
-/* 폭죽 */
+.overlay.show{ opacity:1; }
 .particle{
   position:fixed;
   width:8px;
@@ -55,12 +51,8 @@ body{
   animation:explode 1s ease-out forwards;
 }
 @keyframes explode{
-  to{
-    transform:translate(var(--x), var(--y));
-    opacity:0;
-  }
+  to{ transform:translate(var(--x), var(--y)); opacity:0; }
 }
-/* 중앙 메시지 */
 .big-message{
   position:fixed;
   inset:0;
@@ -76,11 +68,10 @@ body{
   z-index:20;
   text-shadow:0 4px 20px rgba(0,0,0,.4);
   transition:opacity .4s ease;
+  padding:24px;
+  pointer-events:none;
 }
-.big-message.show{
-  opacity:1;
-}
-/* 카드 */
+.big-message.show{ opacity:1; }
 .card{
   position:relative;
   z-index:10;
@@ -108,6 +99,8 @@ h1{
   width:280px;
   height:80px;
   margin:0 auto;
+  touch-action:manipulation;
+  overflow:visible;
 }
 .btn{
   position:absolute;
@@ -119,6 +112,8 @@ h1{
   font-size:17px;
   cursor:pointer;
   transition:transform .2s ease;
+  pointer-events:auto;
+  z-index:100;
 }
 .btn:active{transform:scale(.9);}
 .yes{
@@ -146,4 +141,72 @@ h1{
 <body>
 <div class="overlay" id="overlay"></div>
 <div class="big-message" id="bigMessage"></div>
-<d
+<div class="card">
+  <h1>
+    술많이 마셔서 미안😭<br>
+    일요일에 고기먹으러 갈까?
+  </h1>
+  <div class="btn-container" id="btnArea">
+    <button class="btn yes" id="yesBtn" type="button">Yes ❤️</button>
+    <button class="btn no"  id="noBtn"  type="button">No</button>
+  </div>
+  <div class="result" id="result">❤️ 잡았다 ❤️</div>
+</div>
+<script>
+(function(){
+  const yesBtn  = document.getElementById("yesBtn");
+  const noBtn   = document.getElementById("noBtn");
+  const overlay = document.getElementById("overlay");
+  const bigMsg  = document.getElementById("bigMessage");
+  const result  = document.getElementById("result");
+
+  yesBtn.addEventListener("click", () => {
+    document.body.style.backgroundImage =
+      'linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)), url("02.jpg")';
+    overlay.classList.add("show");
+    result.style.display = "block";
+    bigMsg.textContent = "🎉 우리 데이트 확정 🎉";
+    bigMsg.classList.add("show");
+    launchFireworks();
+  });
+
+  function moveNo(){
+    const w = noBtn.offsetWidth  || 120;
+    const h = noBtn.offsetHeight || 56;
+    noBtn.style.position = "fixed";
+    noBtn.style.zIndex   = "200";
+    noBtn.style.left = Math.max(0, Math.random() * (window.innerWidth  - w)) + "px";
+    noBtn.style.top  = Math.max(0, Math.random() * (window.innerHeight - h)) + "px";
+  }
+
+  noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, { passive:false });
+  noBtn.addEventListener("click",      (e) => { e.preventDefault(); moveNo(); });
+
+  function launchFireworks(){
+    const colors = ["#ff4d6d","#ff8fab","#ffb3c1","#ff006e","#fb5607","#ffbe0b","#8338ec","#3a86ff"];
+    for(let burst = 0; burst < 6; burst++){
+      setTimeout(() => {
+        const cx = Math.random() * window.innerWidth;
+        const cy = Math.random() * window.innerHeight * 0.6;
+        for(let i = 0; i < 20; i++){
+          const p = document.createElement("div");
+          p.className = "particle";
+          const angle = (i / 20) * 360;
+          const dist  = 60 + Math.random() * 80;
+          const rad   = angle * Math.PI / 180;
+          p.style.left = cx + "px";
+          p.style.top  = cy + "px";
+          p.style.background = colors[Math.floor(Math.random() * colors.length)];
+          p.style.setProperty("--x", (Math.cos(rad) * dist) + "px");
+          p.style.setProperty("--y", (Math.sin(rad) * dist) + "px");
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 1100);
+        }
+      }, burst * 250);
+    }
+  }
+})();
+</script>
+</body>
+</html>
